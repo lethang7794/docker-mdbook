@@ -30,12 +30,16 @@ CPU architectures amd64 and arm64 are supported.
 - [mdbook-mermaid]
 - [mdbook-toc]
 - [mdbook-admonish]
+- [mdbook-alerts]
+- [mdbook-pagetoc]
+- [mdbook-yml-header]
 
 [mdbook-mermaid]: https://github.com/badboy/mdbook-mermaid
 [mdbook-toc]: https://github.com/badboy/mdbook-toc
 [mdbook-admonish]: https://github.com/tommilligan/mdbook-admonish
-
-
+[mdbook-alerts]: https://github.com/lambdalisue/rs-mdbook-alerts
+[mdbook-pagetoc]: https://github.com/slowsage/mdbook-pagetoc
+[mdbook-yml-header]: https://github.com/dvogt23/mdbook-yml-header
 
 ## Getting started
 

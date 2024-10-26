@@ -9,6 +9,9 @@ DOCKER_VERSION := $(shell cat ./deps/Cargo.toml | grep 'mdbook = ' | awk '{print
 MDBOOK_MERMAID_VERSION := $(shell cat ./deps/Cargo.toml | grep 'mdbook-mermaid = ' | awk '{print $$3}' | tr -d '"')
 MDBOOK_TOC_VERSION := $(shell cat ./deps/Cargo.toml | grep 'mdbook-toc = ' | awk '{print $$3}' | tr -d '"')
 MDBOOK_ADMONISH_VERSION := $(shell cat ./deps/Cargo.toml | grep 'mdbook-admonish = ' | awk '{print $$3}' | tr -d '"')
+MDBOOK_ALERTS_VERSION := $(shell cat ./deps/Cargo.toml | grep 'mdbook-alerts = ' | awk '{print $$3}' | tr -d '"')
+MDBOOK_PAGETOC_VERSION := $(shell cat ./deps/Cargo.toml | grep 'mdbook-pagetoc = ' | awk '{print $$3}' | tr -d '"')
+MDBOOK_YML_HEADER_VERSION := $(shell cat ./deps/Cargo.toml | grep 'mdbook-yml-header = ' | awk '{print $$3}' | tr -d '"')
 DOCKER_TAG := v${DOCKER_VERSION}
 GITHUB_REF_NAME ?= local
 DOCKER_SCOPE := mdbook-${GITHUB_REF_NAME}
@@ -65,6 +68,9 @@ build-alpine:
 		--build-arg MDBOOK_MERMAID_VERSION="${MDBOOK_MERMAID_VERSION}" \
 		--build-arg MDBOOK_TOC_VERSION="${MDBOOK_TOC_VERSION}" \
 		--build-arg MDBOOK_ADMONISH_VERSION="${MDBOOK_ADMONISH_VERSION}" \
+		--build-arg MDBOOK_ALERTS_VERSION="${MDBOOK_ALERTS_VERSION}" \
+		--build-arg MDBOOK_PAGETOC_VERSION="${MDBOOK_PAGETOC_VERSION}" \
+		--build-arg MDBOOK_YML_HEADER_VERSION="${MDBOOK_YML_HEADER_VERSION}" \
 		--build-arg CARGO_TARGET="${CARGO_TARGET}"
 
 .PHONY: build-rust
@@ -79,6 +85,9 @@ build-rust:
 		--build-arg MDBOOK_MERMAID_VERSION="${MDBOOK_MERMAID_VERSION}" \
 		--build-arg MDBOOK_TOC_VERSION="${MDBOOK_TOC_VERSION}" \
 		--build-arg MDBOOK_ADMONISH_VERSION="${MDBOOK_ADMONISH_VERSION}" \
+		--build-arg MDBOOK_ALERTS_VERSION="${MDBOOK_ALERTS_VERSION}" \
+		--build-arg MDBOOK_PAGETOC_VERSION="${MDBOOK_PAGETOC_VERSION}" \
+		--build-arg MDBOOK_YML_HEADER_VERSION="${MDBOOK_YML_HEADER_VERSION}" \
 		--build-arg CARGO_TARGET="${CARGO_TARGET}"
 
 .PHONY: merge

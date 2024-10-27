@@ -92,14 +92,14 @@ build-rust:
 
 .PHONY: merge
 merge:
-	docker buildx imagetools create --tag "${PKG_NAME}" "${HUB_NAME}-amd64" "${HUB_NAME}-arm64"
-	docker buildx imagetools create --tag "${HUB_NAME}" "${HUB_NAME}-amd64" "${HUB_NAME}-arm64"
-	docker buildx imagetools create --tag "${PKG_LATEST}" "${HUB_NAME}-amd64" "${HUB_NAME}-arm64"
-	docker buildx imagetools create --tag "${HUB_LATEST}" "${HUB_NAME}-amd64" "${HUB_NAME}-arm64"
+	docker buildx imagetools create --tag "${PKG_NAME}" "${HUB_NAME}-amd64" "${HUB_NAME}-amd64"
+	docker buildx imagetools create --tag "${HUB_NAME}" "${HUB_NAME}-amd64" "${HUB_NAME}-amd64"
+	# docker buildx imagetools create --tag "${PKG_LATEST}" "${HUB_NAME}-arm64" "${HUB_NAME}-arm64"
+	# docker buildx imagetools create --tag "${HUB_LATEST}" "${HUB_NAME}-arm64" "${HUB_NAME}-arm64"
 	docker buildx imagetools create --tag "${PKG_NAME}-rust" "${HUB_NAME}-rust-amd64" "${HUB_NAME}-rust-arm64"
 	docker buildx imagetools create --tag "${HUB_NAME}-rust" "${HUB_NAME}-rust-amd64" "${HUB_NAME}-rust-arm64"
-	docker buildx imagetools create --tag "${PKG_LATEST}-rust" "${HUB_NAME}-rust-amd64" "${HUB_NAME}-rust-arm64"
-	docker buildx imagetools create --tag "${HUB_LATEST}-rust" "${HUB_NAME}-rust-amd64" "${HUB_NAME}-rust-arm64"
+	# docker buildx imagetools create --tag "${PKG_LATEST}-rust" "${HUB_NAME}-rust-arm64" "${HUB_NAME}-rust-arm64"
+	# docker buildx imagetools create --tag "${HUB_LATEST}-rust" "${HUB_NAME}-rust-arm64" "${HUB_NAME}-rust-arm64"
 
 .PHONY: test
 test:
@@ -110,11 +110,17 @@ test:
 test-build:
 	docker run --rm -v "./example:/book" "${HUB_NAME}-$(PLATFORM)" build
 	docker run --rm -v "./example:/book" --entrypoint sh "${HUB_NAME}-$(PLATFORM)" -c 'mdbook-admonish install /book'
+	docker run --rm -v "./example:/book" --entrypoint sh "${HUB_NAME}-$(PLATFORM)" -c 'mdbook-alerts --help'
+	docker run --rm -v "./example:/book" --entrypoint sh "${HUB_NAME}-$(PLATFORM)" -c 'mdbook-pagetoc --help'
+	docker run --rm -v "./example:/book" --entrypoint sh "${HUB_NAME}-$(PLATFORM)" -c 'mdbook-yml-header --help'
 
 .PHONY: test-build-with-latest
 test-build-with-latest:
 	docker run --rm -v "./example:/book" "${HUB_LATEST}" build
 	docker run --rm -v "./example:/book" --entrypoint sh "${HUB_LATEST}" -c 'mdbook-admonish install /book'
+	docker run --rm -v "./example:/book" --entrypoint sh "${HUB_NAME}-$(PLATFORM)" -c 'mdbook-alerts --help'
+	docker run --rm -v "./example:/book" --entrypoint sh "${HUB_NAME}-$(PLATFORM)" -c 'mdbook-pagetoc --help'
+	docker run --rm -v "./example:/book" --entrypoint sh "${HUB_NAME}-$(PLATFORM)" -c 'mdbook-yml-header --help'
 
 .PHONY: run
 run:

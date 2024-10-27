@@ -97,10 +97,10 @@ merge:
 	docker buildx imagetools create --tag "${PKG_NAME}-rust" "${HUB_NAME}-rust-amd64" "${HUB_NAME}-rust-amd64"
 	docker buildx imagetools create --tag "${HUB_NAME}-rust" "${HUB_NAME}-rust-amd64" "${HUB_NAME}-rust-amd64"
 	
-	docker buildx imagetools create --tag "${PKG_LATEST}" "${HUB_NAME}-amd64" "${HUB_NAME}-amd64"
-	docker buildx imagetools create --tag "${HUB_LATEST}" "${HUB_NAME}-amd64" "${HUB_NAME}-amd64"
 	docker buildx imagetools create --tag "${PKG_LATEST}-rust" "${HUB_NAME}-rust-amd64" "${HUB_NAME}-rust-amd64"
 	docker buildx imagetools create --tag "${HUB_LATEST}-rust" "${HUB_NAME}-rust-amd64" "${HUB_NAME}-rust-amd64"
+	docker buildx imagetools create --tag "${PKG_LATEST}" "${HUB_NAME}-amd64" "${HUB_NAME}-amd64"
+	docker buildx imagetools create --tag "${HUB_LATEST}" "${HUB_NAME}-amd64" "${HUB_NAME}-amd64"
 
 .PHONY: test
 test:

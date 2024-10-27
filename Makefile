@@ -108,8 +108,8 @@ merge:
 
 .PHONY: test
 test:
-	@docker run --rm "${HUB_NAME}-$(PLATFORM)" --version
-	@docker run --rm "${HUB_NAME}-rust-$(PLATFORM)" --version
+	@docker run --rm "${HUB_NAME}-$(PLATFORM)" mdbook --version
+	@docker run --rm "${HUB_NAME}-rust-$(PLATFORM)" mdbook --version
 
 .PHONY: test-build
 test-build:

@@ -15,35 +15,35 @@ ARG MDBOOK_YML_HEADER_VERSION
 
 ENV CARGO_TARGET_DIR="/usr/local/cargo-target"
 
-RUN rm -f /etc/apt/apt.conf.d/docker-clean &&
-    echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' >/etc/apt/apt.conf.d/keep-cache
+RUN rm -f /etc/apt/apt.conf.d/docker-clean && \
+    echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache
 RUN --mount=type=cache,sharing=locked,target=/var/cache/apt \
     --mount=type=cache,sharing=locked,target=/var/lib/apt \
-    apt-get update &&
+    apt-get update && \
     apt-get install --no-install-recommends -y \
-        musl-tools \
-        file
+    musl-tools \
+    file
 RUN rustup target add "${CARGO_TARGET}"
 RUN --mount=type=cache,sharing=locked,target=/usr/local/cargo-target \
-    cargo install mdbook --version "${MDBOOK_VERSION}" --target "${CARGO_TARGET}" &&
+    cargo install mdbook --version "${MDBOOK_VERSION}" --target "${CARGO_TARGET}" && \
     strip "$(which mdbook)"
 RUN --mount=type=cache,sharing=locked,target=/usr/local/cargo-target \
-    cargo install mdbook-mermaid --version "${MDBOOK_MERMAID_VERSION}" --target "${CARGO_TARGET}" &&
+    cargo install mdbook-mermaid --version "${MDBOOK_MERMAID_VERSION}" --target "${CARGO_TARGET}" && \
     strip "$(which mdbook-mermaid)"
 RUN --mount=type=cache,sharing=locked,target=/usr/local/cargo-target \
-    cargo install mdbook-toc --version "${MDBOOK_TOC_VERSION}" --target "${CARGO_TARGET}" &&
+    cargo install mdbook-toc --version "${MDBOOK_TOC_VERSION}" --target "${CARGO_TARGET}" && \
     strip "$(which mdbook-toc)"
 RUN --mount=type=cache,sharing=locked,target=/usr/local/cargo-target \
-    cargo install mdbook-admonish --version "${MDBOOK_ADMONISH_VERSION}" --target "${CARGO_TARGET}" &&
+    cargo install mdbook-admonish --version "${MDBOOK_ADMONISH_VERSION}" --target "${CARGO_TARGET}" && \
     strip "$(which mdbook-admonish)"
 RUN --mount=type=cache,sharing=locked,target=/usr/local/cargo-target \
-    cargo install mdbook-alerts --version "${MDBOOK_ALERTS_VERSION}" --target "${CARGO_TARGET}" &&
+    cargo install mdbook-alerts --version "${MDBOOK_ALERTS_VERSION}" --target "${CARGO_TARGET}" && \
     strip "$(which mdbook-alerts)"
 RUN --mount=type=cache,sharing=locked,target=/usr/local/cargo-target \
-    cargo install mdbook-pagetoc --version "${MDBOOK_PAGETOC_VERSION}" --target "${CARGO_TARGET}" &&
+    cargo install mdbook-pagetoc --version "${MDBOOK_PAGETOC_VERSION}" --target "${CARGO_TARGET}" && \
     strip "$(which mdbook-pagetoc)"
 RUN --mount=type=cache,sharing=locked,target=/usr/local/cargo-target \
-    cargo install mdbook-yml-header --version "${MDBOOK_YML_HEADER_VERSION}" --target "${CARGO_TARGET}" &&
+    cargo install mdbook-yml-header --version "${MDBOOK_YML_HEADER_VERSION}" --target "${CARGO_TARGET}" && \
     strip "$(which mdbook-yml-header)"
 
 FROM ${BASE_IMAGE}

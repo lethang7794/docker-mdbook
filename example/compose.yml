@@ -1,5 +1,5 @@
 services:
-  mdbook:
+  mdbook-service:
     container_name: mdbook-container
     image: lethang7794/mdbook:v0.4.40-amd64
     stdin_open: true

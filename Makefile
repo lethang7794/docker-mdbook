@@ -4,8 +4,8 @@ DOCKER_BUILDKIT := 1
 DOCKER_USERNAME := lethang7794
 DOCKER_IMAGE_NAME := mdbook
 
-BASE_IMAGE_MINIMAL := "alpine:3.20"
-BASE_IMAGE_RUST := "rust:alpine3.20"
+BASE_IMAGE_MINIMAL := alpine:3.20
+BASE_IMAGE_RUST := rust:alpine3.20
 
 DOCKER_HUB_BASE_NAME := ${DOCKER_USERNAME}/${DOCKER_IMAGE_NAME}
 DOCKER_BASE_NAME := ghcr.io/${DOCKER_HUB_BASE_NAME}
@@ -113,29 +113,29 @@ test:
 
 .PHONY: test-build
 test-build:
-	docker run --rm -v "./example:/book" "${HUB_NAME}-$(PLATFORM)" build
-	docker run --rm -v "./example:/book" --entrypoint sh "${HUB_NAME}-$(PLATFORM)" -c 'mdbook-admonish install /book'
-	docker run --rm -v "./example:/book" --entrypoint sh "${HUB_NAME}-$(PLATFORM)" -c 'mdbook-alerts --help'
-	docker run --rm -v "./example:/book" --entrypoint sh "${HUB_NAME}-$(PLATFORM)" -c 'mdbook-pagetoc --help'
-	docker run --rm -v "./example:/book" --entrypoint sh "${HUB_NAME}-$(PLATFORM)" -c 'mdbook-yml-header --help'
+	docker run --rm -v "./example:/app" "${HUB_NAME}-$(PLATFORM)" mdbook build
+	docker run --rm -v "./example:/app" --entrypoint sh "${HUB_NAME}-$(PLATFORM)" -c 'mdbook-admonish install /app'
+	docker run --rm -v "./example:/app" --entrypoint sh "${HUB_NAME}-$(PLATFORM)" -c 'mdbook-alerts --help'
+	docker run --rm -v "./example:/app" --entrypoint sh "${HUB_NAME}-$(PLATFORM)" -c 'mdbook-pagetoc --help'
+	docker run --rm -v "./example:/app" --entrypoint sh "${HUB_NAME}-$(PLATFORM)" -c 'mdbook-yml-header --help'
 
 .PHONY: test-build-with-latest
 test-build-with-latest:
-	docker run --rm -v "./example:/book" "${HUB_LATEST}" build
-	docker run --rm -v "./example:/book" --entrypoint sh "${HUB_LATEST}" -c 'mdbook-admonish install /book'
-	docker run --rm -v "./example:/book" --entrypoint sh "${HUB_NAME}-$(PLATFORM)" -c 'mdbook-alerts --help'
-	docker run --rm -v "./example:/book" --entrypoint sh "${HUB_NAME}-$(PLATFORM)" -c 'mdbook-pagetoc --help'
-	docker run --rm -v "./example:/book" --entrypoint sh "${HUB_NAME}-$(PLATFORM)" -c 'mdbook-yml-header --help'
+	docker run --rm -v "./example:/app" "${HUB_LATEST}" mdbook build
+	docker run --rm -v "./example:/app" --entrypoint sh "${HUB_LATEST}" -c 'mdbook-admonish install /app'
+	docker run --rm -v "./example:/app" --entrypoint sh "${HUB_NAME}-$(PLATFORM)" -c 'mdbook-alerts --help'
+	docker run --rm -v "./example:/app" --entrypoint sh "${HUB_NAME}-$(PLATFORM)" -c 'mdbook-pagetoc --help'
+	docker run --rm -v "./example:/app" --entrypoint sh "${HUB_NAME}-$(PLATFORM)" -c 'mdbook-yml-header --help'
 
 .PHONY: run
 run:
-	docker run --rm -i -t -v "./example:/book" -p "3000:3000" -p "3001:3001" --entrypoint sh "${HUB_NAME}-$(PLATFORM)"
+	docker run --rm -i -t -v "./example:/app" -p "3000:3000" -p "3001:3001" --entrypoint sh "${HUB_NAME}-$(PLATFORM)"
 
 .PHONY: compose-build
 compose-build:
 	cd ./example && \
-	docker compose run --rm mdbook build && \
-	docker compose run --rm --entrypoint sh mdbook -c 'mdbook-admonish install /book'
+	docker compose run --rm mdbook-service mdbook build && \
+	docker compose run --rm --entrypoint sh mdbook-service -c 'mdbook-admonish install /app'
 
 .PHONY: compose-serve
 compose-serve:

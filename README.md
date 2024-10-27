@@ -1,92 +1,192 @@
-<!-- https://shields.io/ -->
+# Dockerfile for mdBook
 
-[![license](https://img.shields.io/github/license/peaceiris/docker-mdbook.svg)](https://github.com/peaceiris/docker-mdbook/blob/main/LICENSE)
+[![license](https://img.shields.io/github/license/lethang7794/docker-mdbook.svg)](https://github.com/lethang7794/docker-mdbook/blob/main/LICENSE)
+![image tags](https://ghcr-badge.egpl.dev/lethang7794/mdbook/tags?color=%2344cc11&ignore=latest%2Clatest-rust&n=3&label=image+tags&trim=)
 
-<img width="400" alt="Docker image for mdBook" src="./images/ogp.jpg">
+> [!IMPORTANT]
+> This is a fork of [peaceiris/docker-mdbook] with more [pre-installed preprocessors](#pre-installed-preprocessors-for-mdbook) for mdBook
 
+Dockerfile for [mdBook] - a utility to create modern online books from Markdown files (Like Gitbook but implemented in Rust).
 
+## Image overview
 
-## Alpine-Based Docker Images for mdBook
+### Image Variants
 
-Alpine-based Docker Images for [rust-lang/mdBook].
+#### `mdbook:<version>` - Minimum image
 
-[rust-lang/mdBook]: https://github.com/rust-lang/mdBook
+- This image is based on the popular [Alpine Linux project⁠](https://alpinelinux.org/) available in [the `alpine` official image] [^1].
 
-- [peaceiris/mdbook - Docker Hub]
+#### `mdbook:<version>-rust` - Including `rust`
 
-[peaceiris/mdbook - Docker Hub]: https://hub.docker.com/r/peaceiris/mdbook
+- This image is based on the [`rust-alpine` official image](https://hub.docker.com/_/rust) (which is also based on [the `alpine` official image]).
 
-[![DockerHub Badge](https://dockeri.co/image/peaceiris/mdbook)][peaceiris/mdbook - Docker Hub]
+> [!NOTE]
+> If you need to run `mdbook test`, use `mdbook:<version>-rust`.
 
-Docker images on GitHub Packages [ghcr.io/peaceiris/mdbook] are also available.
+### Image Architectures
 
-[ghcr.io/peaceiris/mdbook]: https://github.com/users/peaceiris/packages/container/package/mdbook
+Only `amd64` is supported.
 
-CPU architectures amd64 and arm64 are supported.
+## Pre-built Images
 
+- DockerHub: [hub.docker.com/r/lethang7794/mdbook]
 
-## Pre-installed preprocessors for mdBook
+  [![DockerHub Badge](https://dockeri.co/image/lethang7794/mdbook)][hub.docker.com/r/lethang7794/mdbook]
 
-- [mdbook-mermaid]
-- [mdbook-toc]
-- [mdbook-admonish]
-- [mdbook-alerts]
-- [mdbook-pagetoc]
-- [mdbook-yml-header]
+- GitHub's Container registry: [ghcr.io/lethang7794/mdbook]
 
+  [![latest size](https://ghcr-badge.egpl.dev/lethang7794/mdbook/size?color=%2344cc11&tag=latest&label=latest&trim=)](https://github.com/lethang7794/docker-mdbook/pkgs/container/mdbook/versions)
+  [![latest-rust size](https://ghcr-badge.egpl.dev/lethang7794/mdbook/size?color=%2344cc11&tag=latest-rust&label=latest-rust&trim=)](https://github.com/lethang7794/docker-mdbook/pkgs/container/mdbook/versions)
+
+## Pre-installed software
+
+- `mdbook`
+
+- Preprocessors for mdBook:
+
+  - [mdbook-mermaid]
+  - [mdbook-toc]
+  - [mdbook-admonish]
+  - [mdbook-alerts]
+  - [mdbook-pagetoc]
+  - [mdbook-yml-header]
+
+## How to use this Dockerfile
+
+### Build your own images
+
+- Run `make build`
+
+### Use pre-built images
+
+- See [Pre-built Images](#pre-built-images) section.
+
+## How to use the images built from this Dockerfile
+
+### Run the image directly
+
+- Change directory to the root of your mdbook
+
+  - It's the directory with `book.toml` file.
+
+  - If you haven't have a mdbook yet, you can:
+
+    - Use the example mdbook in the `example` of this repository.
+
+      ```bash
+      cd example
+      ```
+
+    - Or create one with this Docker image
+
+      ```bash
+      docker run -it --rm --volume="$PWD":/app --name=mdbook-container lethang7794/mdbook:v0.4.40-amd64 mdbook init
+      ```
+
+      See [Creating a Book | User Guide - mdBook Documentation](https://rust-lang.github.io/mdBook/guide/creating.html)
+
+- Serve the book at <http://localhost:3000>
+
+  ```bash
+  docker run -it --rm --volume="$PWD":/app --publish=3000:3000 --name=mdbook-container lethang7794/mdbook:v0.4.40-amd64 mdbook serve --hostname=0.0.0.0
+  ```
+
+> [!WARNING]
+> To allow run any pre-installed commands easily, the Dockerfile use `CMD` directory instead of `ENTRYPOINT`.
+>
+> - This cause the process running inside the container can NOT be killed with `Ctrl+C`.
+
+> [!TIP]
+> If you want to kill the mdbook server, kill the `mdbook-container`:
+>
+> ```bash
+> docker kill mdbook-container
+> ```
+
+- Build the book (to the `book` directory in your host mdbook directory):
+
+  ```bash
+  docker run -it --rm --volume="$PWD":/app --publish=3000:3000 --name=mdbook-container lethang7794/mdbook:v0.4.40-amd64 mdbook build
+  ```
+
+### Run the image via a compose file
+
+- Change directory to the root of your mdbook
+
+  - It's the directory with `book.toml` file.
+
+  - If you haven't have a mdbook yet, you can:
+
+    - Use the example mdbook in the `example` of this repository.
+
+      ```bash
+      cd example
+      ```
+
+    - Or create one with this Docker image
+
+      ```bash
+      docker compose run --rm mdbook init
+      ```
+
+- Add a `compose.yml` file:
+
+  ```yaml
+  services:
+    mdbook-service:
+      container_name: mdbook-container
+      image: lethang7794/mdbook:v0.4.40-amd64
+      stdin_open: true
+      tty: true
+      ports:
+        - 3000:3000
+        - 3001:3001
+      volumes:
+        - ${PWD}:/app
+      command:
+        - serve
+        - --hostname
+        - "0.0.0.0"
+        - --watcher
+        - native
+  ```
+
+  See the example [`compose.yml`](https://github.com/lethang7794/docker-mdbook/blob/main/example/compose.yml) in the `example` directory.
+
+- Serves a book at http://localhost:3000, and rebuilds it on changes
+
+  ```
+  docker compose up
+  ```
+
+> [!TIP]
+> When serve the book with docker compose, you can press `Ctrl+C` to kill the server.
+
+- Build the book (to the `book` directory in your mdbook directory):
+
+  ```
+  docker compose run --rm mdbook build
+  ```
+
+## Credits
+
+- [peaceiris/docker-mdbook]
+
+## License
+
+- [MIT License]
+
+[mdBook]: https://github.com/rust-lang/mdBook
+[hub.docker.com/r/lethang7794/mdbook]: https://hub.docker.com/r/lethang7794/mdbook
+[ghcr.io/lethang7794/mdbook]: https://github.com/users/lethang7794/packages/container/package/mdbook
 [mdbook-mermaid]: https://github.com/badboy/mdbook-mermaid
 [mdbook-toc]: https://github.com/badboy/mdbook-toc
 [mdbook-admonish]: https://github.com/tommilligan/mdbook-admonish
 [mdbook-alerts]: https://github.com/lambdalisue/rs-mdbook-alerts
 [mdbook-pagetoc]: https://github.com/slowsage/mdbook-pagetoc
 [mdbook-yml-header]: https://github.com/dvogt23/mdbook-yml-header
+[peaceiris/docker-mdbook]: https://github.com/peaceiris/actions-mdbook
+[the `alpine` official image]: https://hub.docker.com/_/alpine
+[MIT License]: https://github.com/lethang7794/docker-mdbook/blob/main/LICENSE
 
-## Getting started
-
-### Available Docker Image Tags
-
-| Image tag (mdBook version) | Base Image | Image size | Notes |
-|---|---|---|---|
-| `peaceiris/mdbook:v0.x.x` | `alpine:3.20` | 30MB | Minimum image |
-| `peaceiris/mdbook:v0.x.x-rust` | `rust:1.78-alpine3.20` | 855MB | `mdbook test` subcommand is available |
-| `ghcr.io/peaceiris/mdbook:v0.x.x` | `alpine:3.20` | 30MB | GitHub Packages: Minimum image |
-| `ghcr.io/peaceiris/mdbook:v0.x.x-rust` | `rust:1.78-alpine3.20` | 855MB | GitHub Packages: `mdbook test` subcommand is available |
-
-### Docker Compose
-
-Please refer to the example project and the [`compose.yml`](https://github.com/peaceiris/docker-mdbook/blob/main/example/compose.yml).
-
-```sh
-cd ./example
-
-# Run "mdbook serve"
-docker compose up
-
-# Run "mdbook build"
-docker compose run --rm mdbook build
-
-# Run "mdbook init"
-docker compose run --rm mdbook init
-```
-
-
-
-## GitHub Actions for mdBook
-
-The mdBook Setup GitHub Action is recommended.
-
-- [peaceiris/actions-mdbook: GitHub Actions for mdBook (rust-lang/mdBook) ⚡️ Setup mdBook quickly and build your site fast. Linux (Ubuntu), macOS, and Windows are supported.](https://github.com/peaceiris/actions-mdbook)
-
-
-
-## License
-
-- [MIT License - peaceiris/docker-mdbook]
-
-[MIT License - peaceiris/docker-mdbook]: https://github.com/peaceiris/docker-mdbook/blob/main/LICENSE
-
-
-
-## About the author
-
-- [peaceiris homepage](https://peaceiris.com/)
+[^1]: Alpine Linux is much smaller than most distribution base images (~5MB), and thus leads to much slimmer images in general.

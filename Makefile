@@ -114,16 +114,16 @@ test:
 .PHONY: test-build
 test-build:
 	docker run --rm -v "./example:/app" "${HUB_NAME}-$(PLATFORM)" mdbook build
-	docker run --rm -v "./example:/app" --entrypoint sh "${HUB_NAME}-$(PLATFORM)" -c 'mdbook-admonish install /app'
-	docker run --rm -v "./example:/app" --entrypoint sh "${HUB_NAME}-$(PLATFORM)" -c 'mdbook-alerts --help'
+	docker run --rm -v "./example:/app" --entrypoint sh "${HUB_NAME}-$(PLATFORM)" -c 'mdbook-admonish --version'
+	docker run --rm -v "./example:/app" --entrypoint sh "${HUB_NAME}-$(PLATFORM)" -c 'mdbook-alerts --version'
 	docker run --rm -v "./example:/app" --entrypoint sh "${HUB_NAME}-$(PLATFORM)" -c 'mdbook-pagetoc --help'
 	docker run --rm -v "./example:/app" --entrypoint sh "${HUB_NAME}-$(PLATFORM)" -c 'mdbook-yml-header --help'
 
 .PHONY: test-build-with-latest
 test-build-with-latest:
 	docker run --rm -v "./example:/app" "${HUB_LATEST}" mdbook build
-	docker run --rm -v "./example:/app" --entrypoint sh "${HUB_LATEST}" -c 'mdbook-admonish install /app'
-	docker run --rm -v "./example:/app" --entrypoint sh "${HUB_NAME}-$(PLATFORM)" -c 'mdbook-alerts --help'
+	docker run --rm -v "./example:/app" --entrypoint sh "${HUB_LATEST}" -c 'mdbook-admonish --version'
+	docker run --rm -v "./example:/app" --entrypoint sh "${HUB_NAME}-$(PLATFORM)" -c 'mdbook-alerts --version'
 	docker run --rm -v "./example:/app" --entrypoint sh "${HUB_NAME}-$(PLATFORM)" -c 'mdbook-pagetoc --help'
 	docker run --rm -v "./example:/app" --entrypoint sh "${HUB_NAME}-$(PLATFORM)" -c 'mdbook-yml-header --help'
 

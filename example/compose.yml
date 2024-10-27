@@ -10,6 +10,7 @@ services:
     volumes:
       - ${PWD}:/app
     command:
+      - mdbook
       - serve
       - --hostname
       - "0.0.0.0"
